@@ -1,0 +1,31 @@
+{
+  "repo_type": "app",
+  "severity_profile": "ci-standard",
+  "authority_files": [
+    "docs/master/MASTER.md",
+    ".rootrules",
+    "AGENTS.md",
+    ".agentrules",
+    "governance.config.json"
+  ],
+  "validators": {
+    "strict_files": true,
+    "structure": true,
+    "forbidden_paths": true,
+    "hygiene": true,
+    "agent_layer": true,
+    "discovery": false,
+    "reachability": false,
+    "contracts": false,
+    "policy": false
+  },
+  "paths": {
+    "policies_dir": "governance/policies",
+    "contracts_dir": "governance/contracts",
+    "reports_dir": "governance/reports"
+  },
+  "agent_layer": {
+    "config_root": "agent",
+    "registry": "node_modules/@aihackers-volym/agent-rules-pack/manifests/overlay-registry.json"
+  }
+}

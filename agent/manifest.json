@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "rules_pack": "@aihackers-volym/agent-rules-pack",
+  "core": [
+    "planning.rules",
+    "approval.rules",
+    "response.rules",
+    "verification.rules",
+    "stop.rules",
+    "safety.rules"
+  ],
+  "primary_runtime_overlay": "chatgpt.rules",
+  "secondary_overlays": [
+    "handover.rules"
+  ]
+}

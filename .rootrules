@@ -1,0 +1,8 @@
+# Root Rules — Consumer Template
+
+1. Fail-closed on all configuration errors.
+2. pnpm is the only allowed package manager.
+3. Governance uses shared `@aihackers-volym` packages — no local rewrites.
+4. No silent scope expansion without governance amendment.
+5. No shadow systems or duplicate governance implementations.
+6. Authority hierarchy: MASTER.md > .rootrules > AGENTS.md > .agentrules

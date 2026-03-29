@@ -1,0 +1,11 @@
+{
+  "allowed_primary": ["chatgpt.rules"],
+  "allowed_secondary": ["handover.rules"],
+  "active_primary": "chatgpt.rules",
+  "active_secondary": ["handover.rules"],
+  "constraints": {
+    "max_primary": 1,
+    "max_secondary": 3,
+    "local_overrides_may_only_tighten": true
+  }
+}

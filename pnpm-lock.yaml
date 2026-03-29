@@ -1,0 +1,43 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      '@aihackers-volym/agent-layer-validator':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@aihackers-volym/agent-rules-pack':
+        specifier: ^0.1.0
+        version: 0.1.0
+      '@aihackers-volym/governance-core':
+        specifier: ^0.1.0
+        version: 0.1.0
+
+packages:
+
+  '@aihackers-volym/agent-layer-validator@0.1.0':
+    resolution: {integrity: sha512-kIqcnyq3fUASG1hjuY9bHvc1uQ+8MP4NlKZQuYJu03UZ/BEP2Qx1Y788JPfpyCVYjclat4Az6gpiLTO17QKoUw==, tarball: https://npm.pkg.github.com/download/@aihackers-volym/agent-layer-validator/0.1.0/b106fef7416dcfc24a0ab7a18ac48f2e973b0e83}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  '@aihackers-volym/agent-rules-pack@0.1.0':
+    resolution: {integrity: sha512-Jz0sVLPpr+tRA/CMml3XWRTJeA4wNJ10u8DcmqCr1lnjSrZ0Dav8tsIR7NAdhcTwHJ2htVY7yzaL79xnSH0C5Q==, tarball: https://npm.pkg.github.com/download/@aihackers-volym/agent-rules-pack/0.1.0/b2687ee404ac4be835f5eeb87fba5bb56a2fe8e4}
+    engines: {node: '>=20'}
+
+  '@aihackers-volym/governance-core@0.1.0':
+    resolution: {integrity: sha512-++I2cQ+/IpvbP0a8BoUU7eGm9FxSSvxN6Y4NS76Hx1xKMlOcaG2NlPipu7PCZJ5+yxCaaxILhPDfzaWFNLE79w==, tarball: https://npm.pkg.github.com/download/@aihackers-volym/governance-core/0.1.0/631a1fe1be6e57e2581958f9fbad94c5c40afbb3}
+    engines: {node: '>=20'}
+    hasBin: true
+
+snapshots:
+
+  '@aihackers-volym/agent-layer-validator@0.1.0': {}
+
+  '@aihackers-volym/agent-rules-pack@0.1.0': {}
+
+  '@aihackers-volym/governance-core@0.1.0': {}

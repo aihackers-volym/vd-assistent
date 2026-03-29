@@ -1,0 +1,22 @@
+CORE
+- planning.rules
+- approval.rules
+- response.rules
+- verification.rules
+- stop.rules
+- safety.rules
+
+PRIMARY RUNTIME OVERLAY
+- chatgpt.rules
+
+SECONDARY CAPABILITY OVERLAYS
+- handover.rules
+
+LOCAL OVERRIDES
+- .agentrules.local
+
+IMMUTABLE CORE GATES
+- Fail closed
+- No implementation without owner approval
+- Separate verified facts from assumptions
+- Conflicts trigger stop
