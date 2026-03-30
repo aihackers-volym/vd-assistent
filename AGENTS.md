@@ -1,4 +1,4 @@
-# AGENTS — Consumer Template
+# AGENTS — VD-assistent
 
 ## Authority Hierarchy
 

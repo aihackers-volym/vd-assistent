@@ -1,4 +1,4 @@
-# Root Rules — Consumer Template
+# Root Rules — VD-assistent
 
 1. Fail-closed on all configuration errors.
 2. pnpm is the only allowed package manager.

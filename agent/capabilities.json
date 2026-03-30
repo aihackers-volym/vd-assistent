@@ -3,5 +3,5 @@
   "browser": false,
   "vector": false,
   "structured_handover": true,
-  "code_execution": false
+  "code_execution": true
 }

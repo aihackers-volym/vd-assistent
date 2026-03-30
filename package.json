@@ -1,5 +1,5 @@
 {
-  "name": "pilot-governance-consumer",
+  "name": "vd-assistent",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.28.0",
