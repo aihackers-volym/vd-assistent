@@ -1,59 +1,103 @@
 # CASE 02 — Ny kundförfrågan (oklar / låg kvalitet)
 
-> Kritiskt test: verifiera att systemet filtrerar lågkvalitativa leads från VD:s bord.
-
----
-
 ## Input
-- **Från:** privatperson@gmail.com
-- **Ämne:** Bygga om lite
-- **Mejl:**
+
+* **Från:** privatperson@gmail.com
+* **Ämne:** Bygga om lite
+* **Mejl:**
+
   > Tjena,
   > Behöver hjälp med lite bygggrejer, vet inte riktigt vad det kostar.
   > Kan ni höra av er?
 
 ## Klassificering
-- **Typ:** Sälj / Ny lead
-- **Underkategori:** Privatperson / oklar omfattning
-- **Prioritet:** Låg
+
+* **Typ:** Ny kundförfrågan
+* **Underkategori:** Lead / låg kvalitet / oklar omfattning
+* **Prioritet:** Låg–medel
 
 ## Bedömning
-- **Ska Jonas in:** Nej
-- **Varför:** 
-  - otydlig förfrågan från privatperson (troligtvis B2C, litet värde)
-  - inget som kräver VD:s tid eller strategiska ställningstagande
-- **Föreslagen ansvarig:** 
-  - Projektledare eller kundservice/info@
-- **Vad som saknas:** 
-  - all väsentlig information om projektet, plats och budget
-- **Risknivå:** Låg
+
+* **Ska Jonas in:** Nej, inte i första läget
+* **Varför:**
+
+  * mycket låg informationsgrad
+  * oklar omfattning
+  * inget tyder ännu på att detta kräver VD-bedömning
+  * bör först kvalificeras genom enkel strukturfråga
+* **Föreslagen ansvarig:**
+
+  * första kvalificering kan hanteras av annan ansvarig än Jonas
+  * Jonas bör först komma in om leadet visar sig vara seriöst och relevant
+* **Vad som saknas:**
+
+  * typ av arbete
+  * plats/adress
+  * omfattning
+  * tidplan
+  * om det gäller privat eller företag
+* **Risknivå:** Låg
 
 ## AI föreslår
-- **Rekommenderad hantering:** Be om förtydligande via standardiserat svar, alternativt hänvisa till formulär på webben.
-- **Rekommenderad delegering:** Delegera till projektledare för hantering.
-- **Rekommenderad batching:** Ja. Kan hanteras i klump med andra småfrågor.
-- **Rekommenderad uppföljning:** Inget förrän kunden återkommer med mer information.
+
+* **Rekommenderad hantering:**
+
+  * svara med kort kvalificeringsfråga istället för att lägga tid på offert eller längre dialog
+* **Rekommenderad delegering:**
+
+  * låt första kvalificering hanteras utanför Jonas om möjligt
+* **Rekommenderad batching:**
+
+  * ja, denna typ av lågkvalitativ första kontakt kan batchas med andra enklare lead-svar
+* **Rekommenderad uppföljning:**
+
+  * endast om kunden svarar med mer konkret underlag
 
 ## Utkast
-- **Internt:** 
-  > Kan du svara på denna och be om mer specifikation? Verkar vara ett mindre privatjobb.
-- **Externt:** 
-  > Hej,
-  > Tack för att du hör av dig. För att vi ska kunna bedöma om vi kan hjälpa dig behöver vi lite mer information om vad det är du vill bygga och var. 
-  > Återkom gärna med en kort beskrivning så kikar vi på det!
-  > Mvh
+
+* **Internt:**
+
+  ```text
+  Detta är för tunt för att ta vidare som skarp förfrågan nu.
+
+  Föreslagen hantering:
+  skicka kort kvalificeringssvar och invänta konkret underlag innan vidare bedömning.
+  ```
+* **Externt:**
+
+  ```text
+  Hej,
+
+  Tack för ditt mejl.
+
+  För att vi ska kunna hjälpa dig vidare behöver vi lite mer information om vad det gäller.
+
+  Skicka gärna:
+  - vad du vill ha hjälp med
+  - ungefärlig omfattning
+  - adress/plats
+  - när du vill att arbetet ska göras
+
+  När vi fått det kan vi återkomma om nästa steg.
+
+  Vänliga hälsningar
+  ```
 
 ## Ingen action utförd
-- inget mejl har skickats
-- ingen task har skapats
-- ingen status har uppdaterats
-- ingen delegering har skickats
-- ingen extern kommunikation har skett
+
+* inget mejl har skickats
+* ingen task har skapats
+* ingen status har uppdaterats
+* ingen delegering har skickats
+* ingen extern kommunikation har skett
 
 ## Kräver manuell handling
-- Någon behöver läsa och skicka ett kvalificerande svar
-- Jonas behöver *inte* agera
+
+* någon människa behöver välja om detta ska besvaras nu eller läggas i batch
+* någon människa behöver godkänna och skicka kvalificeringssvaret
 
 ## Fail-closed-note
-- AI:n avvisar inte kunden helt, utan föreslår ett standardiserat kvalificeringssteg
-- VD-tid sparas genom att eskalera ner ärendet
+
+* underlaget är för svagt för att bedöma om detta är relevant affär eller inte
+* AI:n bör inte anta scope, pris eller prioritet utifrån detta mejl
+* nästa steg bör vara enkel kvalificering, inte analys eller offert
