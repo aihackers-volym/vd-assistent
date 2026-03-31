@@ -18,6 +18,7 @@ VD-assistent — AI-baserat VD-stöd för prioritering, beslutsstöd och uppföl
 | R1 | [MOCK-EMAIL-PACK-V1.md](file:///Users/andreasbladini/apps/vd-assistent/docs/r1/MOCK-EMAIL-PACK-V1.md) | 12 mockade mejlcase för kärnlogiktest |
 | R1 | [AUTONOMY-POLICY.md](file:///Users/andreasbladini/apps/vd-assistent/docs/r1/AUTONOMY-POLICY.md) | Fas 1 autonomy — AI föreslår, Jonas beslutar |
 | R1 | [OUTPUT-FORMAT-V2.md](file:///Users/andreasbladini/apps/vd-assistent/docs/r1/OUTPUT-FORMAT-V2.md) | Fail-closed outputformat — 8 obligatoriska sektioner |
+| R1 | [DECISION-MATRIX-V1.md](file:///Users/andreasbladini/apps/vd-assistent/docs/r1/DECISION-MATRIX-V1.md) | Sammanställning av motorlogik och utfall för mock cases |
 
 ## Governance
 
