@@ -112,7 +112,6 @@ Alla mockcase ska använda dessa fasta rubriker:
 
 ## Standardmall
 
-```
 ## Input
 - **Från:**
 - **Ämne:**
@@ -145,10 +144,10 @@ Alla mockcase ska använda dessa fasta rubriker:
 - ingen task har skapats
 - ingen status har uppdaterats
 - ingen delegering har skickats
+- ingen extern kommunikation har skett
 
 ## Kräver manuell handling
 - ...
 
 ## Fail-closed-note
 - ...
-```
