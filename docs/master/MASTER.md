@@ -16,6 +16,7 @@ VD-assistent — AI-baserat VD-stöd för prioritering, beslutsstöd och uppföl
 | R1 | [QUESTION-ENGINE-V1.md](file:///Users/andreasbladini/apps/vd-assistent/docs/r1/QUESTION-ENGINE-V1.md) | Question Engine v1 — struktur och pipeline |
 | R1 | [MOCK-EMAIL-DECISION.md](file:///Users/andreasbladini/apps/vd-assistent/docs/r1/MOCK-EMAIL-DECISION.md) | Mockad mejlbas — R1A mock, R1B real replacement |
 | R1 | [MOCK-EMAIL-PACK-V1.md](file:///Users/andreasbladini/apps/vd-assistent/docs/r1/MOCK-EMAIL-PACK-V1.md) | 12 mockade mejlcase för kärnlogiktest |
+| R1 | [AUTONOMY-POLICY.md](file:///Users/andreasbladini/apps/vd-assistent/docs/r1/AUTONOMY-POLICY.md) | Fas 1 autonomy — AI föreslår, Jonas beslutar |
 
 ## Governance
 
