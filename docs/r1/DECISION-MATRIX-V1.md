@@ -1,31 +1,94 @@
-# Decision Matrix v1
+# Decision Matrix v1 — VD-assistent
 
-## Dokumentstatus
-Denna matris sammanfattar logiken och utfallen från R1A mock cases (1-12) renderade enligt OUTPUT-FORMAT-V2.
-**Måste vara granskad och godkänd innan kodning av Question Engine.**
+## Syfte
+Decision Matrix v1 är första styrtabellen för hur VD-assistenten ska resonera över mockcase innan någon motorlogik formuleras i kod.
 
----
+Matrisen ska tydligt visa:
+- vilka ärenden som kräver Jonas
+- vilka som ska delegeras
+- vilka som ska batchas
+- vilka som kräver approval
+- vilka som saknar tillräckligt underlag
+- vad nästa rekommenderade handling är
+
+## Grundprincip
+AI-assistenten får i Fas 1 endast föreslå.
+Allt i denna matris är därför rekommenderad logik, inte utförd handling.
+
+## Fält
+- case
+- typ
+- prioritet
+- ska Jonas in
+- föreslagen ansvarig
+- risknivå
+- approval krävs
+- batching
+- vad som saknas
+- rekommenderad nästa handling
+
+## Decision Matrix v1
 
 | Case | Typ | Prioritet | Ska Jonas in | Föreslagen ansvarig | Risknivå | Approval krävs | Batching | Vad som saknas | Rekommenderad nästa handling |
-|------|-----|-----------|--------------|----------------------|----------|----------------|----------|----------------|------------------------------|
-| **01** (Ny lead) | Sälj | Hög | Ja | Jonas | Medel | Ja (utkast) | Nej | Specifikationer, intern kapacitet | Boka kort kvalificeringssamtal. |
-| **02** (Oklar lead) | Sälj | Låg | Nej | Projektledare / Info | Låg | Ja (utkast) | Ja | Omfattning, budget, plats | Be om förtydligande via standardiserat svar. |
-| **03** (Tidsrisk) | Pågående projekt | Hög | Ja | Jonas (beslut) / PL (fakta) | Hög | Ja (svar/beslut)| Nej | Omfattningspåverkan, alt. väg, kostnad | Be PL ta fram underlag före kundbesked. |
-| **04** (Status) | Pågående projekt | Låg | Nej | Projektledare | Låg | Nej | Ja (passiv) | Inget kritiskt | Logga status, använd som passiv info. |
-| **05** (Prisändring) | Leverantör | Med-Hög | Ja | Jonas | Medel | Ja (accept) | Nej | Kalkylpåverkan för Q2 | Gör intern kalkylkontroll före svar/Förhandla. |
-| **06** (Transporttid)| Leverantör | Låg-Med | Nej | Projektledare / Platschef| Låg | Ja (utkast) | Nej | Operativ status kl 07:00 | Delegera för snabb bekräftelse om 07 funkar. |
-| **07** (Snickarfråga)| Intern | Låg | Nej | Projektledare | Låg | Ja (direktiv)| Ja | Avtalad spec, budget för val | Låt projektledare svara utifrån kundavtal. |
-| **08** (ÄTA-blocker) | Pågående projekt | Medel | Ja | Jonas (godkänn) / PL | Medel | Ja (ÄTA) | Nej | Sifferunderlag för tid/pris | Be PL ta fram ÄTA-kalkyl innan accept från kund. |
-| **09** (Missnöjd) | Kund | Hög | Ja | Jonas | Hög | Ja (utkast) | Nej | Kundens exakta kritik, PL-fakta | Jonas ringer idag. Be PL om bakgrundsfakta. |
-| **10** (Nya ritningar)| Pågående projekt | Medel | Nej | Projektledare | Låg | Ja (delegering)| Ja/Nej | Teknisk granskning av påverkan | Delegera teknisk bedömning till PL. Flagga ev. risk. |
-| **11** (När kommer ni)| Kund (Info) | Låg | Nej | Projektledare / Schemaläggare| Låg | Ja (utkast) | Ja | Kalender för aktuellt projekt | Låt ansvarig bekräfta från dagens batch-frågor. |
-| **12** (Flytta möte) | Admin | Låg-Med | Ja/Nej | Den bokade personen | Låg | Ja (utkast/kal)| Ja | Kalenderstatus för fredag | Kontrollera ledig kalender, föreslå ny tid. |
+|---|---|---:|---|---|---|---|---|---|---|
+| CASE 01 | Ny kundförfrågan / potentiellt bra affär | Hög | Ja | Jonas först, därefter ev. projektledare/offertansvarig | Medel | Ja | Nej | Plats, exakt scope, ritningar, detaljerad tidplan, typ av offertönskemål | Kvalificera leadet med tydliga frågor innan offertspår |
+| CASE 02 | Ny kundförfrågan / låg kvalitet | Låg–medel | Nej, inte i första läget | Annan ansvarig för första kvalificering | Låg | Ja, innan svar skickas | Ja | Typ av arbete, plats, omfattning, tidplan, kundtyp | Skicka kort kvalificeringssvar och invänta bättre underlag |
+| CASE 03 | Pågående projekt / avvikelse / tidsrisk | Hög | Ja | Jonas för kundlinje, projektledare för beslutsunderlag | Hög | Ja | Nej | Exakt tidspåverkan, alternativ lösning, kostnadspåverkan, rekommendation från projektledare | Ta fram beslutsunderlag direkt och lås kundlinje innan svar |
+| CASE 04 | Pågående projekt / status utan avvikelse | Låg | Nej | Projektledare | Låg | Nej | Ja, passiv batch i översikt | Inget kritiskt | Ingen direkt action, lägg i statusöversikt |
+| CASE 05 | Leverantör / prisändring | Hög | Ja | Jonas för kommersiell linje, annan ansvarig för faktainsamling | Hög | Ja | Nej | Exakt påverkan, vilka rader/material som påverkas, effekt på projekt/offerter, alternativ leverantör | Begär förtydligande och gör intern påverkananalys innan svar |
+| CASE 06 | Leverantör / praktisk logistikfråga | Låg–medel | Nej | Projektledare eller platsansvarig | Låg | Ja, innan svar skickas | Nej | Om 07:00 fungerar operativt | Låt operativt ansvarig kontrollera och svara kort |
+| CASE 08 | Pågående projekt / scope change / pris- och tidspåverkan | Hög | Ja | Jonas för kommersiell riktning, projektledare för underlag | Hög | Ja | Nej | Exakt ändring, prispåverkan, tidspåverkan, vad som sagts till kund, rekommenderad lösning | Ta fram tydligt ändringsunderlag innan något lovas till kund |
+| CASE 10 | Pågående projekt / ritning / möjlig påverkan | Medel–hög | Nej, inte i första läget | Projektledare eller tekniskt ansvarig först | Medel–hög | Ja, innan extern återkoppling | Nej | Vad som ändrats, påverkan på Carpenters del, tid, kostnad, omfattning | Gör teknisk bedömning först, eskalera till Jonas om faktisk påverkan finns |
+| CASE 11 | Kundfråga / enkel planering | Låg | Nej | Projektledare eller operativt ansvarig | Låg | Ja, innan svar skickas | Ja | Nästa planerade dag | Bekräfta planerad dag och svara kort |
+| CASE 12 | Kundfråga / enkel ombokning | Låg | Nej | Projektledare eller operativt ansvarig | Låg | Ja, innan svar skickas | Ja | Om fredag fungerar utan krock | Kontrollera tid och svara kort med bekräftelse eller alternativ |
 
----
+## Första styrmönster som matrisen visar
 
-## Sammanfattning av VD-involvering (Jonas)
-- **4 av 12** cases blockerar ej, delegeras helt (02, 04, 07, 10).
-- **2 av 12** kräver bara kort delegering/godkännande utan operativ ansträngning (06, 11).
-- **6 av 12** kräver VD:s strategiska beslutskraft eller relationsbyggande förmåga (01, 03, 05, 08, 09, samt egen kalender i 12). 
+### 1. Jonas ska in när:
+- tid påverkas
+- pris påverkas
+- kundlöfte påverkas
+- ansvar är oklart
+- kommersiell linje måste väljas
+- scope förändras
+- leverantörsärende påverkar marginal eller åtagande
 
-Detta visar att motorlogiken aktivt kan störa ut hälften av bruset och låta Jonas arbeta med undantag, affärer och risker.
+### 2. Jonas ska normalt inte in när:
+- frågan är ren status utan avvikelse
+- frågan är enkel logistik
+- frågan är enkel planering eller ombokning
+- första kvalificering av lågkvalitativ lead kan göras av annan ansvarig
+
+### 3. Batching ska användas när:
+- frågan är enkel
+- risknivån är låg
+- inga strategiska eller kommersiella beslut krävs
+- flera liknande småfrågor kan lösas i samma arbetsblock
+
+### 4. Batching ska inte användas när:
+- tidsrisk finns
+- prispåverkan finns
+- kundkonflikt eller kundlöfte riskeras
+- scope change pågår
+- bilaga/ritning först måste förstås
+- snabb riktning behövs samma dag
+
+### 5. Approval krävs i Fas 1:
+För alla case där någon extern eller intern handling kan bli aktuell.
+AI får bara föreslå.
+Ingen action får tolkas som utförd.
+
+## Tydliga luckor som kvarstår i v1
+Decision Matrix v1 saknar ännu explicit testning för:
+- kundmissnöje / konfliktläge
+- intern fråga som borde kunna delegeras men ofta landar hos Jonas
+- gränsfall där ansvar är oklart mellan två roller
+- fall där låg risk ändå bör lyftas p.g.a. återkommande mönster
+
+## Nästa syfte med matrisen
+Decision Matrix v1 ska användas som grund för:
+- Decision Rules v1
+- Approval Rules v1
+- Delegation Rules v1
+- Batching Rules v1
+- senare mockvalidering mot riktig analys
