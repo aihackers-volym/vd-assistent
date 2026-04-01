@@ -1,58 +1,86 @@
-# CASE 11 — Batchbart (småfrågor 1)
-
-> Kritiskt test: verifiera att systemet föreslår passiv uppsamling (batching) för lågprioriterade icke-brådskande frågor.
-
----
+# CASE 11 — Batchbart (småfråga 1)
 
 ## Input
-- **Från:** kund1@projekt.se
-- **Ämne:** Snabb fråga
-- **Mejl:**
+
+* **Från:** [kund1@projekt.se](mailto:kund1@projekt.se)
+* **Ämne:** Snabb fråga
+* **Mejl:**
+
   > Hej,
   > Vilken dag kommer ni nästa gång?
 
 ## Klassificering
-- **Typ:** Kund
-- **Underkategori:** Planering / informationsfråga
-- **Prioritet:** Låg
+
+* **Typ:** Kundfråga
+* **Underkategori:** Enkel planeringsfråga / schema
+* **Prioritet:** Låg
 
 ## Bedömning
-- **Ska Jonas in:** Nej
-- **Varför:** 
-  - rent praktisk schemafråga
-  - ingen underliggande risk framgår
-  - kräver inget VD-beslut
-- **Föreslagen ansvarig:** 
-  - Projektledare eller den som ansvarar för schemaläggning
-- **Vad som saknas:** 
-  - tillgång till det aktuella projektets kalender
-- **Risknivå:** Låg
+
+* **Ska Jonas in:** Nej
+* **Varför:**
+
+  * frågan är enkel och operativ
+  * ingen strategisk, ekonomisk eller ansvarsmässig risk framgår
+  * detta bör kunna hanteras av projektledare eller ansvarig i projektet
+* **Föreslagen ansvarig:**
+
+  * projektledare eller annan operativt ansvarig
+* **Vad som saknas:**
+
+  * exakt nästa planerade besöksdag
+  * om tidplanen är bekräftad eller preliminär
+* **Risknivå:** Låg
 
 ## AI föreslår
-- **Rekommenderad hantering:** Låt ansvarig för projektet besvara frågan när flödet tillåter.
-- **Rekommenderad delegering:** Delegera till projektledaren/schemaansvarig.
-- **Rekommenderad batching:** Ja. Hantera denna typ av småfrågor i samlade block 1-2 gånger om dagen (t.ex. morgon/eftermiddag).
-- **Rekommenderad uppföljning:** Ingen för VD.
+
+* **Rekommenderad hantering:**
+
+  * besvara med kort och tydlig planeringsinformation
+* **Rekommenderad delegering:**
+
+  * låt operativt ansvarig svara
+* **Rekommenderad batching:**
+
+  * ja, denna typ av enkel planeringsfråga bör kunna samlas med liknande småfrågor i samma arbetsblock
+* **Rekommenderad uppföljning:**
+
+  * ingen separat uppföljning behövs om svar ges
 
 ## Utkast
-- **Internt:** 
-  > Kund X undrar när ni är på plats igen. Har vi en dag vi kan kommunicera ut?
-- **Externt:** 
-  > Hej,
-  > Vi planerar att komma till er igen nu på [dag]. Vår projektledare hör av sig om något skulle ändras.
-  > Mvh
+
+* **Internt:**
+
+  ```text
+  Ta denna tillsammans med andra enkla planeringsfrågor om möjligt.
+
+  Bekräfta nästa planerade dag och svara kort.
+  ```
+* **Externt:**
+
+  ```text
+  Hej,
+
+  Nästa planerade tillfälle är [dag].
+
+  Vänliga hälsningar
+  ```
 
 ## Ingen action utförd
-- inget mejl har skickats
-- ingen task har skapats
-- ingen status har uppdaterats
-- ingen delegering har skickats
-- ingen extern kommunikation har skett
+
+* inget mejl har skickats
+* ingen task har skapats
+* ingen status har uppdaterats
+* ingen delegering har skickats
+* ingen extern kommunikation har skett
 
 ## Kräver manuell handling
-- Någon behöver titta i kalendern och bekräfta tid 
-- Någon behöver skicka svaret till kund
+
+* ansvarig behöver bekräfta nästa planerade dag
+* någon människa behöver godkänna och skicka svaret
 
 ## Fail-closed-note
-- AI:n godkänner ingen automatiserad schemauppdatering
-- Ett samlat batch-flöde förhindrar att VD/Projektledare blir avbruten mitt i annat
+
+* AI:n bör inte ange dag utan att någon verifierat planen
+* frågan är låg risk men ska ändå inte besvaras med gissning
+* detta bör inte störa Jonas direkt
