@@ -1,18 +1,15 @@
-import { emails } from './data.js';
+import { emails, currentCustomer } from './data.js';
 import './style.css';
 
 // --- State ---
-let activeFilter = 'all';
 let selectedEmailId = null;
 
 // --- Init ---
 function init() {
   setDate();
-  renderSummary();
+  renderCustomerCard();
   renderEmails();
-  bindNavigation();
-  bindFilters();
-  bindMenuToggle();
+  bindDrawerClose();
 }
 
 // --- Date ---
@@ -23,232 +20,216 @@ function setDate() {
   el.textContent = now.toLocaleDateString('sv-SE', options);
 }
 
-// --- Summary Stats ---
-function renderSummary() {
-  const stats = {
-    urgent: emails.filter(e => e.jonas).length,
-    delegable: emails.filter(e => !e.jonas && !e.batchTag).length,
-    batchable: emails.filter(e => e.batchTag).length,
-    waiting: emails.filter(e => e.priority === 'medium' && !e.jonas).length
-  };
-
-  const el = document.getElementById('summaryStats');
+// --- Customer Card (Static) ---
+function renderCustomerCard() {
+  const el = document.getElementById('customerDetails');
   el.innerHTML = `
-    <div class="stat-row">
-      <span class="stat-label"><span class="stat-dot urgent"></span>Kräver dig nu</span>
-      <span class="stat-value urgent">${stats.urgent}</span>
+    <div class="info-row">
+      <div class="info-label">Kundnamn</div>
+      <div class="info-val">${currentCustomer.name}</div>
     </div>
-    <div class="stat-row">
-      <span class="stat-label"><span class="stat-dot delegable"></span>Kan delegeras</span>
-      <span class="stat-value delegable">${stats.delegable}</span>
+    <div class="info-row">
+      <div class="info-label">Kontaktperson</div>
+      <div class="info-val">${currentCustomer.contact}</div>
     </div>
-    <div class="stat-row">
-      <span class="stat-label"><span class="stat-dot batchable"></span>Batchbart</span>
-      <span class="stat-value batchable">${stats.batchable}</span>
+    <div class="info-row">
+      <div class="info-label">Status</div>
+      <div class="info-val"><span class="status-tag blue">${currentCustomer.status}</span></div>
     </div>
-    <div class="stat-row">
-      <span class="stat-label"><span class="stat-dot waiting"></span>Väntar</span>
-      <span class="stat-value waiting">${stats.waiting}</span>
+    <div class="info-row">
+      <div class="info-label">Senaste aktivitet</div>
+      <div class="info-val">${currentCustomer.lastActivity}</div>
     </div>
   `;
 }
 
-// --- Render Emails ---
+// --- Render Emails Incol ---
 function renderEmails() {
   const container = document.getElementById('emailCards');
   container.innerHTML = '';
 
-  // Separate batchable and non-batchable
-  const batchable = emails.filter(e => e.batchTag);
-  const regular = emails.filter(e => !e.batchTag);
+  emails.forEach(email => {
+    const card = document.createElement('div');
+    card.className = `email-card ${selectedEmailId === email.id ? 'active' : ''}`;
+    
+    card.innerHTML = `
+      <div class="email-card-top">
+        <div class="from-text">${email.from}</div>
+        <div class="email-card-meta">
+          <span class="status-tag ${email.tagColor}">${email.tag}</span>
+          <span class="priority-dot ${email.priority}"></span>
+        </div>
+      </div>
+      <div class="subject-text">${email.subject}</div>
+    `;
 
-  // Apply filter
-  let filtered = regular;
-  if (activeFilter === 'jonas') {
-    filtered = regular.filter(e => e.jonas);
-  } else if (activeFilter === 'delegera') {
-    filtered = regular.filter(e => !e.jonas);
-  } else if (activeFilter === 'batch') {
-    filtered = [];
-  }
-
-  // Sort: high → medium → low
-  const priorityOrder = { high: 0, medium: 1, low: 2 };
-  filtered.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-
-  // Render regular cards
-  filtered.forEach(email => {
-    container.appendChild(createEmailCard(email));
+    card.addEventListener('click', () => openEmail(email.id));
+    container.appendChild(card);
   });
-
-  // Render batch group if applicable
-  if (activeFilter === 'all' || activeFilter === 'batch') {
-    if (batchable.length > 0) {
-      container.appendChild(createBatchGroup(batchable));
-    }
-  }
 }
 
-// --- Create Email Card ---
-function createEmailCard(email) {
-  const card = document.createElement('div');
-  card.className = `email-card${selectedEmailId === email.id ? ' active' : ''}`;
-  card.dataset.priority = email.priority;
-  card.dataset.id = email.id;
-
-  card.innerHTML = `
-    <div class="email-card-top">
-      <div class="email-priority">
-        <span class="priority-dot ${email.priority}"></span>
-        <span class="priority-label ${email.priority}">${getPriorityLabel(email.priority)}</span>
-      </div>
-      <div class="email-tags">
-        <span class="email-tag ${email.tagColor}">${email.tag}</span>
-        <span class="assignee-badge ${email.jonas ? 'jonas' : 'delegera'}">${email.jonas ? 'JONAS' : 'DELEGERA'}</span>
-      </div>
-    </div>
-    <div class="email-card-subject">${email.subject}</div>
-    <div class="email-card-from">${email.from}</div>
-  `;
-
-  card.addEventListener('click', () => selectEmail(email.id));
-  return card;
-}
-
-// --- Create Batch Group ---
-function createBatchGroup(batchEmails) {
-  const group = document.createElement('div');
-  group.className = 'batch-group';
-
-  group.innerHTML = `
-    <div class="batch-header">
-      <div class="batch-header-left">
-        <div class="batch-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
-          </svg>
-        </div>
-        <div>
-          <div class="batch-title">Småfrågor</div>
-          <div class="batch-count">${batchEmails.length} ärenden kan batchas</div>
-        </div>
-      </div>
-      <span class="batch-badge">BATCH</span>
-    </div>
-    <div class="batch-items">
-      ${batchEmails.map(e => `
-        <div class="batch-item" data-id="${e.id}">
-          <div class="batch-item-subject">${e.subject}</div>
-          <div class="batch-item-from">${e.from}</div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-
-  // Bind click events on batch items
-  group.querySelectorAll('.batch-item').forEach(item => {
-    item.addEventListener('click', () => selectEmail(item.dataset.id));
-  });
-
-  return group;
-}
-
-// --- Select Email ---
-function selectEmail(id) {
+// --- Drawer Logic ---
+function openEmail(id) {
   selectedEmailId = id;
+  renderEmails(); // update active state in list
+  
   const email = emails.find(e => e.id === id);
-  renderEmails(); // Re-render to update active state
-  renderDetail(email);
+  renderDrawerContent(email);
+  
+  document.getElementById('emailDrawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('active');
 }
 
-// --- Render Detail ---
-function renderDetail(email) {
-  const el = document.getElementById('detailCard');
+function bindDrawerClose() {
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
+}
 
-  el.innerHTML = `
-    <div class="detail-header">
-      <div class="detail-subject">${email.subject}</div>
-      <div class="detail-from">Från: ${email.from}</div>
+function closeDrawer() {
+  document.getElementById('emailDrawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('active');
+  selectedEmailId = null;
+  renderEmails();
+}
+
+function renderDrawerContent(email) {
+  const container = document.getElementById('drawerContent');
+  
+  // Bygg konversations-HTML
+  let konversationHtml = '<div class="drawer-section"><details><summary>Tidigare konversation</summary><div class="details-content">';
+  if (email.konversation && email.konversation.length > 0) {
+    email.konversation.forEach(msg => {
+      konversationHtml += `
+        <div class="convo-msg">
+          <div class="convo-meta">${msg.sender} • ${msg.time}</div>
+          <div class="convo-snippet">${msg.snippet}</div>
+        </div>
+      `;
+    });
+  } else {
+    konversationHtml += '<div class="convo-msg"><div class="convo-snippet">Ingen tidigare historik hittades.</div></div>';
+  }
+  konversationHtml += '</div></details></div>';
+
+  // Bygg Källor-HTML
+  let kallorHtml = '<div class="drawer-section"><details><summary>Källor</summary><div class="details-content">';
+  if (email.kallor && email.kallor.length > 0) {
+    email.kallor.forEach(src => {
+      kallorHtml += `
+        <div class="source-item">
+          <div class="source-type">${src.type}</div>
+          <div class="source-title">${src.title} (${src.date})</div>
+          <div class="source-snippet">"${src.snippet}"</div>
+          <div class="source-relevance">Relevant: ${src.relevance}</div>
+          <a href="${src.rawLink}" class="source-link" target="_blank">Visa full råkälla &rarr;</a>
+        </div>
+      `;
+    });
+  } else {
+    kallorHtml += '<div class="source-item"><div class="source-snippet">Inga källor extraherades.</div></div>';
+  }
+  kallorHtml += '</div></details></div>';
+
+  container.innerHTML = `
+    <!-- Header info -->
+    <div class="drawer-subject">${email.subject}</div>
+    <div class="drawer-from">${email.from}</div>
+
+    <!-- 1. Bedömning -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Bedömning</div>
+      <div class="bedomning-box">${email.bedomning}</div>
     </div>
 
-    <div class="detail-section">
-      <div class="detail-section-title">Mejl</div>
-      <div class="detail-body">${email.body}</div>
-    </div>
+    <!-- 2. Nästa steg -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Nästa steg</div>
+      <div class="next-step-card">
+        <div class="next-step-text" id="actionText-${email.id}">${email.nextStep}</div>
+        <div class="next-step-assignee">Ansvarig: <span>${email.assignee}</span></div>
+        
+        <div class="next-step-actions" id="actionButtons-${email.id}">
+          <button class="btn btn-approve" id="btnApprove-${email.id}">Godkänn</button>
+          <button class="btn btn-adjust" id="btnAdjust-${email.id}">Justera</button>
+        </div>
+        
+        <!-- Inline Adjust Area -->
+        <div class="edit-inline-area" id="editArea-${email.id}">
+          <textarea class="edit-textarea" id="editTextArea-${email.id}">${email.nextStep}</textarea>
+          <button class="btn btn-save-edit" id="btnSave-${email.id}">Spara ändring</button>
+        </div>
 
-    <div class="detail-section">
-      <div class="detail-section-title">AI — Nästa steg</div>
-      <div class="detail-next-step">${email.nextStep}</div>
-    </div>
-
-    ${email.draft ? `
-      <div class="detail-section">
-        <div class="detail-section-title">Utkast</div>
-        <div class="detail-draft">${email.draft}</div>
+        <!-- Feedback -->
+        <div class="action-feedback" id="feedback-${email.id}">Godkänt — ingen action utförd</div>
       </div>
+    </div>
+
+    <!-- 3. Utkast (om det finns) -->
+    ${email.draft ? `
+    <div class="drawer-section">
+      <div class="drawer-section-title">Utkast</div>
+      <div class="draft-box">${email.draft}</div>
+    </div>
     ` : ''}
 
-    <div class="detail-meta">
-      <span class="email-tag ${email.tagColor}">${email.tag}</span>
-      <span class="assignee-badge ${email.jonas ? 'jonas' : 'delegera'}">${email.jonas ? 'JONAS' : 'DELEGERA'}</span>
-      ${email.approval ? '<span class="email-tag amber">APPROVAL</span>' : ''}
-      ${email.batchTag ? '<span class="email-tag blue">BATCH</span>' : ''}
+    <!-- 4. Ingen action utförd / 5. Kräver manuell handling (transparens) -->
+    <div class="drawer-section">
+      <div class="no-action-status">
+        <strong>Information:</strong> Ingen exekverande action utförs per automatik.<br>
+        Manuell hantering / utskick krävs av owner.
+      </div>
     </div>
+
+    <!-- 6. Tidigare konversation -->
+    ${konversationHtml}
+
+    <!-- 7. Källor -->
+    ${kallorHtml}
   `;
 
-  el.style.animation = 'none';
-  el.offsetHeight; // trigger reflow
-  el.style.animation = 'fadeIn 0.2s ease forwards';
+  // Bind Actions inside the drawer
+  bindDrawerActions(email.id);
 }
 
-// --- Helpers ---
-function getPriorityLabel(p) {
-  return { high: 'Hög', medium: 'Medel', low: 'Låg' }[p];
-}
+function bindDrawerActions(id) {
+  const btnApprove = document.getElementById(`btnApprove-${id}`);
+  const btnAdjust = document.getElementById(`btnAdjust-${id}`);
+  const btnSave = document.getElementById(`btnSave-${id}`);
+  const editArea = document.getElementById(`editArea-${id}`);
+  const feedback = document.getElementById(`feedback-${id}`);
+  const actionText = document.getElementById(`actionText-${id}`);
+  const editTextArea = document.getElementById(`editTextArea-${id}`);
 
-// --- Navigation ---
-function bindNavigation() {
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      item.classList.add('active');
-
-      // Close mobile sidebar
-      document.getElementById('sidebar').classList.remove('open');
-    });
-  });
-}
-
-// --- Filter Tabs ---
-function bindFilters() {
-  document.querySelectorAll('.filter-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      activeFilter = tab.dataset.filter;
-      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      renderEmails();
-    });
-  });
-}
-
-// --- Mobile Menu ---
-function bindMenuToggle() {
-  const toggle = document.getElementById('menuToggle');
-  const sidebar = document.getElementById('sidebar');
-
-  toggle.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
+  // Godkänn
+  btnApprove.addEventListener('click', () => {
+    // Show feedback "Godkänt - ingen action utförd"
+    feedback.classList.add('active');
+    
+    // Dim the buttons to mark approval without strictly hiding them if preferred,
+    // but the requirement allows dimming or disabling to show state.
+    btnApprove.style.opacity = '0.5';
+    btnApprove.textContent = 'Godkänd ✓';
+    btnApprove.disabled = true;
+    
+    // hide edit area if open
+    editArea.classList.remove('active');
   });
 
-  // Close on outside click
-  document.addEventListener('click', (e) => {
-    if (sidebar.classList.contains('open') &&
-        !sidebar.contains(e.target) &&
-        !toggle.contains(e.target)) {
-      sidebar.classList.remove('open');
-    }
+  // Justera
+  btnAdjust.addEventListener('click', () => {
+    editArea.classList.toggle('active');
+  });
+
+  // Spara ändring (i justera-läget)
+  btnSave.addEventListener('click', () => {
+    actionText.textContent = editTextArea.value;
+    editArea.classList.remove('active');
+    
+    // reset approve button if they adjusted it after approval
+    feedback.classList.remove('active');
+    btnApprove.style.opacity = '1';
+    btnApprove.textContent = 'Godkänn';
+    btnApprove.disabled = false;
   });
 }
 
