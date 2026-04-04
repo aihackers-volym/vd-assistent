@@ -1,47 +1,32 @@
-import { emails, currentCustomer } from './data.js';
+import { emails } from './data.js';
 import './style.css';
 
 // --- State ---
 let selectedEmailId = null;
 
-// --- Init ---
+// --- Initialization ---
 function init() {
   setDate();
-  renderCustomerCard();
   renderEmails();
-  bindDrawerClose();
 }
 
 // --- Date ---
 function setDate() {
-  const el = document.getElementById('currentDate');
+  const el = document.getElementById('datePicker');
+  if (!el) return;
+  
   const now = new Date();
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  el.textContent = now.toLocaleDateString('sv-SE', options);
+  const offset = now.getTimezoneOffset();
+  let today = new Date(now.getTime() - (offset * 60 * 1000));
+  el.value = today.toISOString().split('T')[0];
+  
+  el.addEventListener('change', (e) => {
+    // In framtiden: trigger fetch för valt datum
+    console.log("Valt nytt datum:", e.target.value);
+  });
 }
 
-// --- Customer Card (Static) ---
-function renderCustomerCard() {
-  const el = document.getElementById('customerDetails');
-  el.innerHTML = `
-    <div class="info-row">
-      <div class="info-label">Kundnamn</div>
-      <div class="info-val">${currentCustomer.name}</div>
-    </div>
-    <div class="info-row">
-      <div class="info-label">Kontaktperson</div>
-      <div class="info-val">${currentCustomer.contact}</div>
-    </div>
-    <div class="info-row">
-      <div class="info-label">Status</div>
-      <div class="info-val"><span class="status-tag blue">${currentCustomer.status}</span></div>
-    </div>
-    <div class="info-row">
-      <div class="info-label">Senaste aktivitet</div>
-      <div class="info-val">${currentCustomer.lastActivity}</div>
-    </div>
-  `;
-}
+// Customer card functionality removed per Slice v1 update
 
 // --- Render Emails Incol ---
 function renderEmails() {
@@ -68,35 +53,24 @@ function renderEmails() {
   });
 }
 
-// --- Drawer Logic ---
+// --- Detail Logic ---
 function openEmail(id) {
   selectedEmailId = id;
   renderEmails(); // update active state in list
   
   const email = emails.find(e => e.id === id);
-  renderDrawerContent(email);
-  
-  document.getElementById('emailDrawer').classList.add('open');
-  document.getElementById('drawerOverlay').classList.add('active');
+  renderDetailContent(email);
+
+  if (window.innerWidth <= 900) {
+    document.getElementById('detailContainer').scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
-function bindDrawerClose() {
-  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
-  document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
-}
-
-function closeDrawer() {
-  document.getElementById('emailDrawer').classList.remove('open');
-  document.getElementById('drawerOverlay').classList.remove('active');
-  selectedEmailId = null;
-  renderEmails();
-}
-
-function renderDrawerContent(email) {
-  const container = document.getElementById('drawerContent');
+function renderDetailContent(email) {
+  const container = document.getElementById('detailContainer');
   
   // Bygg konversations-HTML
-  let konversationHtml = '<div class="drawer-section"><details><summary>Tidigare konversation</summary><div class="details-content">';
+  let konversationHtml = '<div class="detail-section"><details><summary>Tidigare konversation</summary><div class="details-content">';
   if (email.konversation && email.konversation.length > 0) {
     email.konversation.forEach(msg => {
       konversationHtml += `
@@ -112,7 +86,7 @@ function renderDrawerContent(email) {
   konversationHtml += '</div></details></div>';
 
   // Bygg Källor-HTML
-  let kallorHtml = '<div class="drawer-section"><details><summary>Källor</summary><div class="details-content">';
+  let kallorHtml = '<div class="detail-section"><details><summary>Källor</summary><div class="details-content">';
   if (email.kallor && email.kallor.length > 0) {
     email.kallor.forEach(src => {
       kallorHtml += `
@@ -131,67 +105,77 @@ function renderDrawerContent(email) {
   kallorHtml += '</div></details></div>';
 
   container.innerHTML = `
-    <!-- Header info -->
-    <div class="drawer-subject">${email.subject}</div>
-    <div class="drawer-from">${email.from}</div>
+    <!-- Ärenderubrik -->
+    <div class="detail-content">
+    <div class="info-label" style="margin-bottom: 6px;">Aktuellt Ärende</div>
+    <div class="detail-subject" style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">${email.subject}</div>
+    <div class="detail-from" style="font-size: 14px; margin-bottom: 32px;">Från: ${email.from}</div>
 
     <!-- 1. Bedömning -->
-    <div class="drawer-section">
-      <div class="drawer-section-title">Bedömning</div>
-      <div class="bedomning-box">${email.bedomning}</div>
+    <div class="detail-section">
+      <div class="info-label" style="margin-bottom: 8px;">AI Bedömning</div>
+      <div class="bedomning-box" style="font-size: 14px; line-height: 1.6; border-left-width: 4px;">${email.bedomning}</div>
     </div>
 
     <!-- 2. Nästa steg -->
-    <div class="drawer-section">
-      <div class="drawer-section-title">Nästa steg</div>
+    <div class="detail-section" style="margin-top: 32px;">
+      <div class="info-label" style="margin-bottom: 8px;">Föreslaget nästa steg</div>
       <div class="next-step-card">
         <div class="next-step-text" id="actionText-${email.id}">${email.nextStep}</div>
         <div class="next-step-assignee">Ansvarig: <span>${email.assignee}</span></div>
-        
-        <div class="next-step-actions" id="actionButtons-${email.id}">
-          <button class="btn btn-approve" id="btnApprove-${email.id}">Godkänn</button>
-          <button class="btn btn-adjust" id="btnAdjust-${email.id}">Justera</button>
-        </div>
-        
-        <!-- Inline Adjust Area -->
-        <div class="edit-inline-area" id="editArea-${email.id}">
-          <textarea class="edit-textarea" id="editTextArea-${email.id}">${email.nextStep}</textarea>
-          <button class="btn btn-save-edit" id="btnSave-${email.id}">Spara ändring</button>
-        </div>
-
-        <!-- Feedback -->
-        <div class="action-feedback" id="feedback-${email.id}">Godkänt — ingen action utförd</div>
       </div>
     </div>
 
     <!-- 3. Utkast (om det finns) -->
     ${email.draft ? `
-    <div class="drawer-section">
-      <div class="drawer-section-title">Utkast</div>
+    <div class="detail-section" style="margin-top: 32px;">
+      <div class="info-label" style="margin-bottom: 8px;">Utkast / Svar</div>
       <div class="draft-box">${email.draft}</div>
     </div>
     ` : ''}
 
-    <!-- 4. Ingen action utförd / 5. Kräver manuell handling (transparens) -->
-    <div class="drawer-section">
+    <!-- Actions (Godkänn/Justera) -->
+    <div class="detail-section" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-subtle);">
+      <div class="next-step-actions" id="actionButtons-${email.id}">
+        <button class="btn btn-approve" id="btnApprove-${email.id}">Godkänn</button>
+        <button class="btn btn-adjust" id="btnAdjust-${email.id}">Justera</button>
+      </div>
+      
+      <!-- Inline Adjust Area -->
+      <div class="edit-inline-area" id="editArea-${email.id}">
+        <textarea class="edit-textarea" id="editTextArea-${email.id}">${email.nextStep}</textarea>
+        <button class="btn btn-save-edit" id="btnSave-${email.id}">Spara ändring</button>
+      </div>
+
+      <!-- Feedback -->
+      <div class="action-feedback" id="feedback-${email.id}">Godkänt — ingen action utförd</div>
+    </div>
+
+    <!-- 4 & 5. Ingen action utförd (Transparens) -->
+    <div class="detail-section" style="margin-top: 32px;">
       <div class="no-action-status">
-        <strong>Information:</strong> Ingen exekverande action utförs per automatik.<br>
-        Manuell hantering / utskick krävs av owner.
+        <strong>Ingen action utförd:</strong> Kräver manuell handling.
       </div>
     </div>
 
     <!-- 6. Tidigare konversation -->
-    ${konversationHtml}
+    <div style="margin-top: 32px;">
+      ${konversationHtml}
+    </div>
 
     <!-- 7. Källor -->
-    ${kallorHtml}
+    <div style="margin-top: 16px;">
+      ${kallorHtml}
+    </div>
+    
+    <div style="height: 60px;"></div> <!-- Bottom Padding -->
+    </div>
   `;
 
-  // Bind Actions inside the drawer
-  bindDrawerActions(email.id);
+  bindDetailActions(email.id);
 }
 
-function bindDrawerActions(id) {
+function bindDetailActions(id) {
   const btnApprove = document.getElementById(`btnApprove-${id}`);
   const btnAdjust = document.getElementById(`btnAdjust-${id}`);
   const btnSave = document.getElementById(`btnSave-${id}`);

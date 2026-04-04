@@ -13,44 +13,82 @@
 <body>
   <div id="app">
     
-    <!-- Topbar (slimmed down) -->
-    <header class="topbar">
-      <div class="topbar-logo">VD-assistent</div>
-      <div class="topbar-date" id="currentDate"></div>
-    </header>
-
-    <main class="main-content">
-      <div class="layout-grid">
-        
-        <!-- Vänster: Inkommande-lista -->
-        <section class="email-list-col">
-          <div class="section-header">
-            <h1>Inkommande</h1>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+            </svg>
           </div>
-          <div class="email-cards" id="emailCards"></div>
-        </section>
-
-        <!-- Höger: Statiskt Kundkort -->
-        <aside class="customer-card-col" id="customerCardContainer">
-          <div class="customer-card">
-            <h2>Om kunden</h2>
-            <div class="customer-details" id="customerDetails">
-              <!-- Renderas via JS -->
-            </div>
+          <div class="logo-text">
+            <span class="logo-org">The Carpenters</span>
+            <span class="logo-name">Jonita</span>
           </div>
-        </aside>
-
+        </div>
       </div>
-    </main>
-
-    <!-- Overlay Drawer (öppnas vid klick på ärende) -->
-    <div class="drawer-overlay" id="drawerOverlay"></div>
-    <aside class="drawer" id="emailDrawer">
-      <button class="drawer-close" id="drawerClose">&times;</button>
-      <div class="drawer-content" id="drawerContent">
-        <!-- Drawer-innehåll renderas här via JS -->
-      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Överblick
+        </a>
+        <a href="#" class="nav-item active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
+          Inkommande
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Förfrågningar
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+          Delegerat
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Uppföljning
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+          Batching
+        </a>
+      </nav>
     </aside>
+
+    <div class="app-main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-logo">Inkommande / Triage</div>
+        <div class="topbar-date">
+          <input type="date" id="datePicker" class="date-picker-input" />
+        </div>
+      </header>
+
+      <main class="main-content">
+        <div class="layout-grid">
+          
+          <!-- Kolumn 1: Lista (Fast bredd, Egen scroll) -->
+          <section class="list-col">
+            <div class="section-header">
+              <h1>Inkommande</h1>
+            </div>
+            <div class="email-cards" id="emailCards"></div>
+          </section>
+
+          <!-- Kolumn 2: Detaljvy för valt ärende -->
+          <aside class="detail-col" id="detailContainer">
+            <div class="placeholder-card">
+              Välj ett inkommande ärende för att se bedömning, nästa steg, konversation och källor.
+            </div>
+          </aside>
+
+        </div>
+      </main>
+    </div>
+
+
 
   </div>
 
