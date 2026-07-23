@@ -3,6 +3,11 @@
 > STATUS: PRELIMINÄR, HYPOTESBASERAD, EJ VERIFIERAD MOT VERKLIGT MAILCORPUS
 > VIKTIG PRINCIP: Detta är *rekommenderad* routing för triage, inga skarpa regelverk som automationsmotorn kör utan manuellt owner-godkännande.
 
+**NOTERING FÖR "APPROVAL KRÄVS" KVARSTÅR:**
+- Tom approval-cell betyder inte autonom exekvering.
+- I Fas 1 krävs fortfarande mänsklig handling.
+- Kolumnen beskriver endast när explicit approval från Jonas eller annan tydlig approver är *särskilt* nödvändig och oundviklig.
+
 | Kategori | Typisk risk | Till Jonas | Till projektledare | Till operativ roll | Till batch | Stopp/mer underlag | Approval krävs | Kommentar |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
 | **Ny lead** | Medel | [x] | | | | | [x] | Jonas måste äga försäljning och resursplanering initialt. |
