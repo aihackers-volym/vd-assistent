@@ -2,16 +2,5 @@
   "name": "vd-assistent",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.28.0",
-  "devDependencies": {
-    "@aihackers-volym/governance-core": "^0.1.0",
-    "@aihackers-volym/agent-rules-pack": "^0.1.0",
-    "@aihackers-volym/agent-layer-validator": "^0.1.0"
-  },
-  "scripts": {
-    "governance:fast": "governance-core --root . --profile local-fast",
-    "governance:ci": "governance-core --root . --profile ci-standard",
-    "governance:hard": "governance-core --root . --profile main-hard",
-    "agent:verify": "agent-layer-validate --root . --registry node_modules/@aihackers-volym/agent-rules-pack/manifests/overlay-registry.json"
-  }
+  "packageManager": "pnpm@10.28.0"
 }
